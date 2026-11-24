@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Masuk Admin WarGem — UI Mockup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            wargem: {
+              green: '#1E5631',
+              greenHover: '#164225',
+              canvas: '#FBFDFB',
+              input: '#EAF0F6',
+              ink: '#1A202C',
+              muted: '#64748B',
+              border: '#D8E1E8',
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #FBFDFB;
+      color: #1A202C;
+    }
+
+    /* Figma-like subtle layer outline mode when Inspector is enabled */
+    .figma-inspect-active [data-layer] {
+      outline: 1px dashed rgba(37, 99, 235, 0.55);
+      outline-offset: 2px;
+      position: relative;
+      transition: outline-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .figma-inspect-active [data-layer]:hover {
+      outline: 1.5px solid #2563EB;
+      background-color: rgba(37, 99, 235, 0.04);
+    }
+
+    .figma-layer-tag {
+      display: none;
+      position: absolute;
+      top: -18px;
+      left: 0;
+      background: #2563EB;
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1;
+      padding: 3px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      z-index: 40;
+      pointer-events: none;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+    }
+
+    .figma-inspect-active [data-layer]:hover > .figma-layer-tag {
+      display: block;
+    }
+
+    /* Smooth custom checkbox */
+    .wargem-checkbox:checked {
+      background-color: #1E5631;
+      border-color: #1E5631;
+    }
+
+    .wargem-checkbox:checked::after {
+      content: "";
+      display: block;
+      width: 5px;
+      height: 9px;
+      border: solid #FFFFFF;
+      border-width: 0 1.8px 1.8px 0;
+      transform: rotate(45deg);
+      margin: 1px auto 0;
+    }
+
+    @keyframes toastSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .toast-animate {
+      animation: toastSlideIn 0.22s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="bg-[#FBFDFB] text-[#1A202C] antialiased selection:bg-[#1E5631]/15 selection:text-[#1E5631]">
+  <!-- Main Page Shell -->
+  <div id="appShell" class="min-h-screen flex flex-col justify-between bg-[#FBFDFB]">
+
+    <!-- Top Navigation Bar -->
+    <header data-layer="TopBar / Header" class="w-full px-4 sm:px-8 lg:px-12 py-4 flex items-center justify-between gap-3 border-b border-transparent">
+      <span class="figma-layer-tag">Frame · TopBar</span>
+
+      <!-- Brand Logo -->
+      <a
+        href="#top"
+        data-layer="BrandLogo / WarGem"
+        onclick="event.preventDefault(); showToast('WarGem · Beranda Utama', 'info');"
+        class="inline-flex items-center text-[22px] sm:text-[24px] font-extrabold tracking-tight text-[#1E5631] hover:opacity-90 transition-opacity rounded-lg px-1 py-0.5"
+      >
+        <span class="figma-layer-tag">Text · WarGem (#1E5631)</span>
+        WarGem
+      </a>
+
+      <!-- Right Status & Admin Pill -->
+      <div data-layer="HeaderRight / StatusGroup" class="flex items-center gap-2.5 sm:gap-4">
+        <span class="figma-layer-tag">AutoLayout · RightGroup</span>
+
+        <div class="hidden sm:inline-flex items-center gap-1.5 text-[12px] font-medium text-[#64748B]">
+          <!-- Store Icon -->
+          <svg class="w-3.5 h-3.5 text-[#1E5631] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 9l1.5-5h15L21 9" />
+            <path d="M3 9h18v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9z" />
+            <path d="M9 21V14h6v7" />
+          </svg>
+          <span>Warung Gembira · Dapur Buka</span>
+        </div>
+
+        <!-- Admin Badge Pill -->
+        <button
+          type="button"
+          data-layer="Badge / AdminPill"
+          onclick="showToast('Mode: Portal autentikasi khusus pengelola & kasir.', 'info')"
+          class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#CBD5E1] bg-white/80 hover:bg-white text-[12.5px] font-semibold text-[#1E5631] transition-colors cursor-pointer"
+        >
+          <span class="figma-layer-tag">Component · AdminBadge</span>
+          <svg class="w-3.5 h-3.5 text-[#1E5631]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <circle cx="12" cy="11" r="2" />
+          </svg>
+          <span>Admin</span>
+        </button>
+
+        <!-- Subtle Figma Spec Toggle Button -->
+        <button
+          id="inspectToggleBtn"
+          type="button"
+          onclick="toggleInspectMode()"
+          title="Tampilkan / sembunyikan lapisan & spesifikasi desain"
+          class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-[#E2E8F0] bg-[#EAF0F6]/70 hover:bg-[#EAF0F6] text-[11.5px] font-medium text-[#475569] transition-colors cursor-pointer"
+        >
+          <svg class="w-3.5 h-3.5 text-[#475569]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+            <path d="M3 14h7v7H3z" />
+          </svg>
+          <span class="hidden md:inline">Specs</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Center Login Section -->
+    <main class="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
+      <div data-layer="LoginCard / CenterContainer" class="w-full max-w-[420px] flex flex-col items-center">
+        <span class="figma-layer-tag">AutoLayout · LoginForm (420px)</span>
+
+        <!-- Eyebrow Badge -->
+        <div
+          data-layer="Eyebrow / PanelPengelola"
+          class="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-[0.14em] uppercase text-[#1E5631] mb-2.5"
+        >
+          <span class="figma-layer-tag">Text · EyebrowBadge</span>
+          <svg class="w-3.5 h-3.5 text-[#1E5631] shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M12 2.25c.26 0 .51.06.74.18l7.5 3.75a1.5 1.5 0 0 1 .83 1.34V12c0 5.37-3.66 9.38-8.65 10.67a1.5 1.5 0 0 1-.84 0C6.42 21.38 2.76 17.37 2.76 12V7.52c0-.56.32-1.08.83-1.34l7.5-3.75c.23-.12.48-.18.74-.18zm0 6.75a.75.75 0 0 1 .75.75v1.5h1.5a.75.75 0 0 1 0 1.5h-1.5v1.5a.75.75 0 0 1-1.5 0v-1.5h-1.5a.75.75 0 0 1 0-1.5h1.5V9.75A.75.75 0 0 1 12 9z" clip-rule="evenodd" />
+          </svg>
+          <span>PANEL PENGELOLA</span>
+        </div>
+
+        <!-- Main Heading -->
+        <h1
+          data-layer="Heading / MasukAdminWarGem"
+          class="text-[28px] sm:text-[34px] font-extrabold tracking-[-0.025em] leading-[1.18] text-[#1A202C] text-center mb-3"
+        >
+          <span class="figma-layer-tag">H1 · 34px Bold #1A202C</span>
+          Masuk Admin WarGem
+        </h1>
+
+        <!-- Subtitle -->
+        <p
+          data-layer="Subtitle / DeskripsiLogin"
+          class="text-[13.5px] sm:text-[14.5px] leading-[1.55] text-[#64748B] text-center max-w-[390px] mb-7"
+        >
+          <span class="figma-layer-tag">Text · Subtitle Muted</span>
+          Masuk untuk memantau pesanan masuk, menyiapkan sajian, dan mengelola daftar menu.
+        </p>
+
+        <!-- Form -->
+        <form id="adminLoginForm" onsubmit="handleLoginSubmit(event)" class="w-full flex flex-col gap-4" novalidate>
+          <!-- Field 1: Username / Email Admin -->
+          <div data-layer="InputGroup / EmailAdmin" class="flex flex-col gap-1.5">
+            <span class="figma-layer-tag">InputField · Email</span>
+            <label for="emailInput" class="text-[13px] font-semibold text-[#1E293B]">
+              Username / Email Admin
+            </label>
+            <div class="relative flex items-center w-full h-[46px] rounded-[8px] bg-[#EAF0F6] border border-transparent focus-within:border-[#1E5631]/40 focus-within:bg-[#E3EBF3] transition-colors px-3.5 gap-2.5">
+              <!-- Mail Icon -->
+              <svg class="w-4 h-4 text-[#64748B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="4" width="20" height="16" rx="2.5" />
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+              </svg>
+              <input
+                id="emailInput"
+                type="text"
+                value="admin@wargem.com"
+                placeholder="Masukkan username atau email admin"
+                autocomplete="username"
+                class="w-full h-full bg-transparent text-[14px] font-medium text-[#1E293B] placeholder-[#94A3B8] focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <!-- Field 2: Kata Sandi -->
+          <div data-layer="InputGroup / KataSandi" class="flex flex-col gap-1.5">
+            <span class="figma-layer-tag">InputField · Password</span>
+            <label for="passwordInput" class="text-[13px] font-semibold text-[#1E293B]">
+              Kata Sandi
+            </label>
+            <div class="relative flex items-center justify-between w-full h-[46px] rounded-[8px] bg-[#EAF0F6] border border-transparent focus-within:border-[#1E5631]/40 focus-within:bg-[#E3EBF3] transition-colors px-3.5 gap-2.5">
+              <div class="flex items-center gap-2.5 flex-1 min-w-0">
+                <!-- Lock Icon -->
+                <svg class="w-4 h-4 text-[#64748B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="11" width="18" height="11" rx="2.5" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                <input
+                  id="passwordInput"
+                  type="password"
+                  value="•••••"
+                  placeholder="Masukkan kata sandi"
+                  autocomplete="current-password"
+                  class="w-full h-full bg-transparent text-[14px] font-medium tracking-[0.14em] text-[#1E293B] placeholder-[#94A3B8] focus:outline-none"
+                />
+              </div>
+
+              <!-- Toggle Password Visibility Button -->
+              <button
+                id="togglePasswordBtn"
+                type="button"
+                onclick="togglePasswordVisibility()"
+                aria-label="Tampilkan atau sembunyikan kata sandi"
+                class="p-1.5 -mr-1.5 rounded-md text-[#64748B] hover:text-[#1E2931] hover:bg-black/5 transition-colors cursor-pointer shrink-0"
+              >
+                <!-- Eye Slash (Default hidden state) -->
+                <svg id="eyeSlashIcon" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+                <!-- Eye Open (Shown when password visible) -->
+                <svg id="eyeOpenIcon" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Checkbox: Ingat saya -->
+          <div data-layer="Checkbox / IngatSaya" class="flex items-center pt-0.5">
+            <span class="figma-layer-tag">Control · Checkbox</span>
+            <label for="rememberCheckbox" class="inline-flex items-center gap-2.5 cursor-pointer select-none py-1">
+              <input
+                id="rememberCheckbox"
+                type="checkbox"
+                onchange="handleRememberChange(this)"
+                class="wargem-checkbox appearance-none w-[15px] h-[15px] rounded-[3.5px] border border-[#CBD5E1] bg-[#F1F5F9] cursor-pointer transition-colors"
+              />
+              <span class="text-[13px] font-medium text-[#475569]">Ingat saya</span>
+            </label>
+          </div>
+
+          <!-- Primary CTA Button -->
+          <button
+            id="submitBtn"
+            type="submit"
+            data-layer="Button / PrimaryCTA"
+            class="mt-1 w-full h-[46px] rounded-[8px] bg-[#1E5631] hover:bg-[#164225] active:scale-[0.99] text-white text-[14px] font-semibold inline-flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(30,86,49,0.18)] transition-all cursor-pointer"
+          >
+            <span class="figma-layer-tag">Button · #1E5631 (46px)</span>
+            <span id="submitBtnText">Masuk ke Panel Admin</span>
+            <svg id="submitArrowIcon" class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </button>
+        </form>
+
+        <!-- Secondary Actions & Role Note -->
+        <div class="mt-6 flex flex-col items-center gap-3 text-center">
+          <button
+            type="button"
+            data-layer="Link / KembaliPembeli"
+            onclick="showToast('Kembali ke halaman Menu Pembeli WarGem.', 'info')"
+            class="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-[#64748B] hover:text-[#1E5631] transition-colors cursor-pointer"
+          >
+            <span class="figma-layer-tag">TextLink · BackToMenu</span>
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+            <span>Kembali ke Menu Pembeli</span>
+          </button>
+
+          <div
+            data-layer="Note / KhususPengelola"
+            class="inline-flex items-center gap-1.5 text-[12px] text-[#64748B]"
+          >
+            <span class="figma-layer-tag">Caption · RoleNote</span>
+            <svg class="w-3.5 h-3.5 text-[#64748B] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <polyline points="9 12 11 14 15 10" />
+            </svg>
+            <span>Khusus Pengelola &amp; Kasir Warung Gembira.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible Figma Layer & Token Inspector Drawer -->
+      <section
+        id="specsDrawer"
+        aria-label="Spesifikasi Layer dan Token Figma"
+        class="hidden w-full max-w-[780px] mt-10 rounded-xl border border-[#DCE5EC] bg-white p-4 sm:p-5 shadow-sm"
+      >
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b border-[#EEF2F6]">
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#1E5631]"></span>
+            <h2 class="text-[13.5px] font-bold text-[#1A202C]">Figma Design Tokens &amp; Layer Hierarchy</h2>
+          </div>
+          <button
+            type="button"
+            onclick="toggleInspectMode()"
+            class="text-[12px] font-semibold text-[#1E5631] hover:underline cursor-pointer"
+          >
+            Tutup Inspector
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-[12px]">
+          <div class="p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0]">
+            <div class="text-[11px] text-[#64748B] mb-1">Primary Brand</div>
+            <div class="flex items-center gap-2 font-semibold text-[#1A202C]">
+              <span class="w-4 h-4 rounded bg-[#1E5631] border border-black/10"></span>
+              <span>#1E5631</span>
+            </div>
+          </div>
+          <div class="p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0]">
+            <div class="text-[11px] text-[#64748B] mb-1">Canvas Background</div>
+            <div class="flex items-center gap-2 font-semibold text-[#1A202C]">
+              <span class="w-4 h-4 rounded bg-[#FBFDFB] border border-[#CBD5E1]"></span>
+              <span>#FBFDFB</span>
+            </div>
+          </div>
+          <div class="p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0]">
+            <div class="text-[11px] text-[#64748B] mb-1">Input Surface</div>
+            <div class="flex items-center gap-2 font-semibold text-[#1A202C]">
+              <span class="w-4 h-4 rounded bg-[#EAF0F6] border border-[#CBD5E1]"></span>
+              <span>#EAF0F6</span>
+            </div>
+          </div>
+          <div class="p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0]">
+            <div class="text-[11px] text-[#64748B] mb-1">Typography &amp; Radius</div>
+            <div class="font-semibold text-[#1A202C]">
+              Inter · 8px / 999px
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Footer Bar -->
+    <footer data-layer="BottomBar / Footer" class="w-full px-4 sm:px-8 lg:px-12 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[12px] text-[#64748B]">
+      <span class="figma-layer-tag">Frame · BottomBar</span>
+
+      <div>
+        © 2026 wargem · Harga Murah, Banyak Menunya.
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-[#64748B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <polyline points="12 7 12 12 15.5 14" />
+          </svg>
+          <span>Buka setiap hari · 08.00–17.00</span>
+        </span>
+
+        <span class="inline-flex items-center gap-1 font-medium text-[#475569]">
+          <svg class="w-3.5 h-3.5 text-[#475569]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <circle cx="12" cy="11" r="2" />
+          </svg>
+          <span>Admin</span>
+        </span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Non-blocking Feedback Notification Toast -->
+  <div id="toastContainer" class="fixed bottom-12 right-4 sm:right-8 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <script>
+    /**
+     * Toggles password input between hidden ('password') and visible ('text'),
+     * updating both the eye icon state and input letter-spacing.
+     */
+    function togglePasswordVisibility() {
+      try {
+        const passwordInput = document.getElementById('passwordInput');
+        const eyeSlashIcon = document.getElementById('eyeSlashIcon');
+        const eyeOpenIcon = document.getElementById('eyeOpenIcon');
+
+        if (!passwordInput || !eyeSlashIcon || !eyeOpenIcon) return;
+
+        const isHidden = passwordInput.type === 'password';
+        if (isHidden) {
+          passwordInput.type = 'text';
+          passwordInput.classList.remove('tracking-[0.14em]');
+          passwordInput.classList.add('tracking-normal');
+          if (passwordInput.value === '•••••') {
+            passwordInput.value = 'wargem123';
+          }
+          eyeSlashIcon.classList.add('hidden');
+          eyeOpenIcon.classList.remove('hidden');
+        } else {
+          passwordInput.type = 'password';
+          passwordInput.classList.remove('tracking-normal');
+          passwordInput.classList.add('tracking-[0.14em]');
+          eyeSlashIcon.classList.remove('hidden');
+          eyeOpenIcon.classList.add('hidden');
+        }
+      } catch (err) {
+        showToast('Gagal mengubah tampilan kata sandi.', 'error');
+      }
+    }
+
+    /**
+     * Handles the "Ingat saya" checkbox toggle with subtle status feedback.
+     */
+    function handleRememberChange(checkbox) {
+      if (!checkbox) return;
+      if (checkbox.checked) {
+        showToast('Sesi login akan diingat di perangkat ini.', 'info');
+      } else {
+        showToast('Opsi "Ingat saya" dinonaktifkan.', 'info');
+      }
+    }
+
+    /**
+     * Handles login form submission with interactive state feedback.
+     */
+    function handleLoginSubmit(event) {
+      event.preventDefault();
+      try {
+        const emailInput = document.getElementById('emailInput');
+        const passwordInput = document.getElementById('passwordInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitBtnText = document.getElementById('submitBtnText');
+
+        const email = emailInput ? emailInput.value.trim() : '';
+        const password = passwordInput ? passwordInput.value.trim() : '';
+
+        if (!email) {
+          showToast('Silakan isi Username atau Email Admin terlebih dahulu.', 'error');
+          emailInput && emailInput.focus();
+          return;
+        }
+
+        if (!password) {
+          showToast('Silakan masukkan Kata Sandi admin.', 'error');
+          passwordInput && passwordInput.focus();
+          return;
+        }
+
+        if (submitBtn && submitBtnText) {
+          submitBtn.disabled = true;
+          const originalText = submitBtnText.textContent;
+          submitBtnText.textContent = 'Memverifikasi...';
+
+          setTimeout(() => {
+            submitBtn.disabled = false;
+            submitBtnText.textContent = originalText;
+            showToast(`Berhasil masuk sebagai ${email} ke Panel Admin WarGem.`, 'success');
+          }, 550);
+        }
+      } catch (err) {
+        showToast('Terjadi kesalahan saat memproses masuk.', 'error');
+      }
+    }
+
+    /**
+     * Toggles Figma layer outlines and the collapsible design token drawer.
+     */
+    function toggleInspectMode() {
+      const shell = document.getElementById('appShell');
+      const drawer = document.getElementById('specsDrawer');
+      const toggleBtn = document.getElementById('inspectToggleBtn');
+
+      if (!shell || !drawer) return;
+
+      const isActive = shell.classList.toggle('figma-inspect-active');
+      drawer.classList.toggle('hidden', !isActive);
+
+      if (toggleBtn) {
+        toggleBtn.classList.toggle('bg-[#DBEAFE]', isActive);
+        toggleBtn.classList.toggle('text-[#1D4ED8]', isActive);
+        toggleBtn.classList.toggle('border-[#93C5FD]', isActive);
+      }
+    }
+
+    /**
+     * Displays a clean floating notification banner instead of native alerts.
+     */
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      let badgeColor = 'bg-[#1E5631]';
+      if (type === 'error') badgeColor = 'bg-[#B91C1C]';
+      if (type === 'success') badgeColor = 'bg-[#15803D]';
+
+      toast.className = 'toast-animate pointer-events-auto flex items-center gap-2.5 max-w-xs sm:max-w-sm rounded-lg bg-[#1A202C] text-white px-3.5 py-2.5 text-[12.5px] font-medium shadow-lg border border-white/10';
+      toast.innerHTML = `
+        <span class="w-2 h-2 rounded-full ${badgeColor} shrink-0"></span>
+        <span class="leading-snug">${escapeHtml(message)}</span>
+      `;
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(6px)';
+        toast.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+        setTimeout(() => toast.remove(), 220);
+      }, 2800);
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
